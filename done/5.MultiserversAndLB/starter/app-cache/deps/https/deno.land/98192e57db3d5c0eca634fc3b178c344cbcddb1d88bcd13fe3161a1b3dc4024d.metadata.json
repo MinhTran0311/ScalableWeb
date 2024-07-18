@@ -1,0 +1,35 @@
+{
+  "headers": {
+    "server-timing": "fetchSource;dur=6",
+    "last-modified": "Fri, 25 Mar 2022 13:32:50 GMT",
+    "access-control-allow-origin": "*",
+    "x-amz-cf-pop": "SIN52-P1",
+    "etag": "\"13591ed7d270e9610cb36484512d41a8\"",
+    "x-amz-version-id": "4r7vRbWpzfxScxhCmztrSqSoRizWhtYH",
+    "cross-origin-embedder-policy": "same-origin",
+    "date": "Fri, 24 Nov 2023 05:21:16 GMT",
+    "via": "http/2 edgeproxy-h",
+    "age": "15828528",
+    "x-cache": "Hit from cloudfront",
+    "accept-ranges": "bytes",
+    "content-length": "15785",
+    "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+    "cache-control": "public, max-age=31536000, immutable",
+    "cross-origin-opener-policy": "same-origin",
+    "x-amz-cf-id": "at4-AyOnYGJdDfN0QQT9gf3SB_mubCdi1-4fHmZX845johAjbkBtMg==",
+    "cross-origin-resource-policy": "same-origin",
+    "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+    "x-amz-replication-status": "COMPLETED",
+    "x-frame-options": "DENY",
+    "content-type": "application/typescript; charset=utf-8",
+    "x-content-type-options": "nosniff",
+    "server": "deno/gcp-asia-southeast1",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "vary": "Accept-Encoding, Origin"
+  },
+  "url": "https://deno.land/std@0.132.0/node/querystring.ts",
+  "now": {
+    "secs_since_epoch": 1716631803,
+    "nanos_since_epoch": 419471805
+  }
+}
