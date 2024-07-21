@@ -5,11 +5,17 @@ const redis = await connect({
   port: 6379,
 });
 
+const enableCache = true;
+
 const cacheMethodCalls = (object, methodsToFlushCacheWith = []) => {
   const handler = {
     get: (module, methodName) => {
       const method = module[methodName];
       return async (...methodArgs) => {
+        if (!enableCache) {
+          return await method.apply(this, methodArgs);
+        }
+
         if (methodsToFlushCacheWith.includes(methodName)) {
           await redis.flushdb()
           return await method.apply(this, methodArgs);

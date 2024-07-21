@@ -5,51 +5,19 @@ const portConfig = { port: 7777 };
 
 const cachedTodoService = cacheMethodCalls(todoService, ["addTodo"]);
 
-const SERVER_ID = crypto.randomUUID();
-const handleGetRoot = async (request) => {
-  return new Response(`Hello from ${SERVER_ID}`);
-};
-
-const handleGetTodos = async () => {
-  return new Response(JSON.stringify(cachedTodoService.getTodos()));
-};
-
-const handleCheck = async () => {
-  return new Response(JSON.stringify(todoService.getTodos()));
-};
-
-const handleGetTodoById = async (request, urlPatternResult) => {
+const handleGetTodo = async (request, urlPatternResult) => {
   const id = urlPatternResult.pathname.groups.id;
-  const todo = cachedTodoService.getTodo(id);
-  if (!todo) {
-    return new Response("Todo not found", { status: 404 });
-  }
-  return new Response(JSON.stringify(todo));
+  return Response.json(await cachedTodoService.getTodo(id));
 };
 
-const handleDeleteTodoById = async (request, urlPatternResult) => {
-  const id = urlPatternResult.pathname.groups.id;
-  const result = cachedTodoService.deleteTodo(id);
-  if (result.count === 0) {
-    return new Response("Todo not found", { status: 404 });
-  }
-  return new Response("Todo deleted", { status: 200 });
+const handleGetTodos = async (request) => {
+  return Response.json(await cachedTodoService.getTodos());
 };
 
 const handlePostTodos = async (request) => {
-  let todo;
-  try {
-    todo = await request.json();
-  } catch {
-    return new Response("Invalid JSON", { status: 400 });
-  }
+  const todo = await request.json();
 
-
-  if (!todo || !todo.todo) {
-    return new Response("Todo is required", { status: 400 });
-  }
-
-  await todoService.addTodo(todo.todo);
+  await cachedTodoService.addTodo(todo.todo);
   return new Response("OK", { status: 200 });
 };
 
@@ -62,28 +30,13 @@ const urlMapping = [
   {
     method: "GET",
     pattern: new URLPattern({ pathname: "/todos/:id" }),
-    fn: handleGetTodoById,
-  },
-  {
-    method: "DELETE",
-    pattern: new URLPattern({ pathname: "/todos/:id" }),
-    fn: handleDeleteTodoById,
+    fn: handleGetTodo,
   },
   {
     method: "POST",
     pattern: new URLPattern({ pathname: "/todos" }),
     fn: handlePostTodos,
-  },
-  {
-    method: "GET",
-    pattern: new URLPattern({ pathname: "/" }),
-    fn: handleGetRoot,
-  },
-  {
-    method: "GET",
-    pattern: new URLPattern({ pathname: "/check" }),
-    fn: handleCheck,
-  },
+  }
 ];
 
 const handleRequest = async (request) => {
