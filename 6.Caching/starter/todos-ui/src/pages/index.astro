@@ -1,5 +1,5 @@
 ---
-
+import Todos from "../components/Todos.svelte"
 ---
 
 <html lang="en">
@@ -11,7 +11,6 @@
 		<title>Astro</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
-		<p>hi</p>
+		<Todos client:load />
 	</body>
 </html>

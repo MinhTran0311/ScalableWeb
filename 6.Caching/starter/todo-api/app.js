@@ -3,7 +3,7 @@ import { cacheMethodCalls } from "./util/cacheUtil.js";
 
 const portConfig = { port: 7777 };
 
-const cachedTodoService = cacheMethodCalls(todoService, ["addTodo"]);
+const cachedTodoService = cacheMethodCalls(todoService, ["addTodo", "deleteTodo"]);
 
 const handleGetTodo = async (request, urlPatternResult) => {
   const id = urlPatternResult.pathname.groups.id;
@@ -21,6 +21,15 @@ const handlePostTodos = async (request) => {
   return new Response("OK", { status: 200 });
 };
 
+const handleDeleteTodoById = async (request, urlPatternResult) => {
+  const id = urlPatternResult.pathname.groups.id;
+  const result = cachedTodoService.deleteTodo(id);
+  if (result.count === 0) {
+    return new Response("Todo not found", { status: 404 });
+  }
+  return new Response("Todo deleted", { status: 200 });
+};
+
 const urlMapping = [
   {
     method: "GET",
@@ -36,7 +45,12 @@ const urlMapping = [
     method: "POST",
     pattern: new URLPattern({ pathname: "/todos" }),
     fn: handlePostTodos,
-  }
+  },
+  {
+    method: "DELETE",
+    pattern: new URLPattern({ pathname: "/todos/:id" }),
+    fn: handleDeleteTodoById,
+  },
 ];
 
 const handleRequest = async (request) => {

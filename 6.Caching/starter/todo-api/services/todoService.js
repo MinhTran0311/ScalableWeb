@@ -15,4 +15,8 @@ const addTodo = async (todo) => {
   await sql`INSERT INTO todos (item) VALUES (${todo})`;
 };
 
-export { getTodo, getTodos, addTodo };
+const deleteTodo = async(id) => {
+  return await sql`DELETE FROM todos WHERE id = ${id} RETURNING *`;
+}
+
+export { getTodo, getTodos, addTodo, deleteTodo };
