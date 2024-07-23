@@ -53,12 +53,12 @@ services:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
     expose:
       - 6379
-  todos-ui:
-    build: todos-ui
-    image: todos-ui
+  todo-ui:
+    build: todo-ui
+    image: todo-ui
     restart: "no"
     volumes:
-      - ./todos-ui/:/app
+      - ./todo-ui/:/app
       - astro_node_modules:/app/node_modules
     ports:
       - 3000
