@@ -1,0 +1,88 @@
+version: "3.4"
+volumes:
+  astro_node_modules:
+
+services:
+  todo-api:
+    build: 
+      context: todo-api
+      dockerfile: Dockerfile.prod
+    image: todo-api-prod
+    restart: "on-failure"
+    expose:
+      - 7777
+    depends_on:
+      - database
+      - flyway
+      - redis
+    env_file:
+      - project.env
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: "5s"
+        max_attempts: 5
+        window: "30s"
+
+  database:
+    container_name: database-server
+    image: postgres:14.1
+    restart: unless-stopped
+    volumes:
+      - ./production-database-data:/var/lib/postgresql/data
+    env_file:
+        - project.env
+
+  flyway:
+    image: flyway/flyway:9.11.0-alpine
+    depends_on:
+      - database
+    volumes:
+      - ./flyway/sql/:/flyway/sql
+    command: -connectRetries=60 -baselineOnMigrate=true migrate
+    env_file:
+      - project.env
+    profiles:
+      - migrate
+
+  pgadmin:
+    image: dpage/pgadmin4:6.20
+    env_file:
+      - project.env
+    depends_on:
+      - database
+    profiles:
+      - pgadmin
+  
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - todo-api
+    ports:
+      - 7800:7800
+  redis:
+    image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    expose:
+      - 6379
+  todo-ui:
+    build: 
+      context: todo-ui
+      dockerfile: Dockerfile.prod
+    image: todo-ui-prod
+    restart: "on-failure"
+    ports:
+      - 3000:80
+    depends_on:
+      - todo-api
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: "5s"
+        max_attempts: 5
+        window: "30s"
